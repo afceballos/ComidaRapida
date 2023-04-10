@@ -3,10 +3,16 @@ package org.comidarapida.view;
 import org.comidarapida.models.*;
 
 import javax.swing.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
 public class ComidaRapida {
-    public static void main(String[] args) {
+
+    private List<Sucursal> sucursals = new ArrayList<>();
+
+    public void Program() {
 
         List<Producto> productos1 = new ArrayList<>();
         List<Producto> productos2 = new ArrayList<>();
@@ -20,8 +26,10 @@ public class ComidaRapida {
         // Crear datos de ejemplo
         Sucursal sucursal1 = new Sucursal(1, "Sucursal 1","Colombia" , gerente1,empleados, inventario);
         Sucursal sucursal2 = new Sucursal(1, "Sucursal 1","Colombia" , gerente2,empleados, inventario);
-        sucursales.add(sucursal1);
-        sucursales.add(sucursal2);
+        addSucursal(sucursal1);
+        addSucursal(sucursal2);
+        /*sucursales.add(sucursal1);
+        sucursales.add(sucursal2);*/
 
 
         Empleado empleado1 = new Empleado(1, "Empleado 1", sucursal1, "preparador");
@@ -64,12 +72,14 @@ public class ComidaRapida {
                     switch (seleccionSucursal) {
                         case 0:
                             // Mostrar todas las sucursales
+                            for (Sucursal sucursal: sucursales){
+                                JOptionPane.showMessageDialog(null, "Sucursales " + sucursal.getId(), "Sucursales", JOptionPane.QUESTION_MESSAGE);
+                            }
                             String mensajeSucursales = "";
                             mensajeSucursales += "sucursal 1" + "\n";
                             mensajeSucursales += "sucursal 2" + "\n";
 
 
-                            JOptionPane.showMessageDialog(null, mensajeSucursales, "Sucursales", JOptionPane.QUESTION_MESSAGE);
                             break;
                         case 1:
                             // Crear nueva sucursal
@@ -201,5 +211,25 @@ public class ComidaRapida {
                 }
             }
         }
+
+        public void addSucursal(Sucursal sucursal){
+        try {
+            Connection connection = loginController.conectar();
+            String query = "INSERT INTO Sucursal (ciudad, pais, gerente, empleados, inventario) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, sucursal.getCiudad());
+            statement.setString(2, sucursal.getPais());
+            statement.setString(3, sucursal.getGerente().toString());
+            statement.setString(4, sucursal.getEmpleados().toString());
+            statement.setString(5, sucursal.getInventario().toString());
+            statement.executeUpdate();
+            loginController.desconectar();
+            System.out.println("Sucursal " + sucursal.getId() + " agregada a la base de datos.");
+        } catch (SQLException e) {
+            System.out.println("Error al agregar la sucursal a la base de datos: " + e.getMessage());
+        }
+        }
+
+
 }
 
