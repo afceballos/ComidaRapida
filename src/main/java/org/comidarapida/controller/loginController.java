@@ -1,4 +1,4 @@
-package org.comidarapida.view;
+package org.comidarapida.controller;
 
 
 import org.comidarapida.models.Empleado;
@@ -12,6 +12,8 @@ public class loginController {
     private static Connection connection;
 
     private static final String URL = "jdbc:sqlite:C:\\sqlite\\comidas.db";
+
+    // Conexion en el modelo o en package Connection
 
     public static Connection conectar(){
         try {

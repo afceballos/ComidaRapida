@@ -1,10 +1,12 @@
 package org.comidarapida.view;
 
+import org.comidarapida.controller.loginController;
 import org.comidarapida.models.*;
 
 import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -71,8 +73,9 @@ public class ComidaRapida {
 
                     switch (seleccionSucursal) {
                         case 0:
+                            consultSucursal();
                             // Mostrar todas las sucursales
-                            for (Sucursal sucursal: sucursales){
+                            for (Sucursal sucursal: sucursals){
                                 JOptionPane.showMessageDialog(null, "Sucursales " + sucursal.getId(), "Sucursales", JOptionPane.QUESTION_MESSAGE);
                             }
                             String mensajeSucursales = "";
@@ -228,6 +231,28 @@ public class ComidaRapida {
         } catch (SQLException e) {
             System.out.println("Error al agregar la sucursal a la base de datos: " + e.getMessage());
         }
+        }
+
+        public void consultSucursal(){
+            try {
+                Connection conexion = loginController.conectar();
+                String query = "SELECT * FROM Sucursal";
+                PreparedStatement statement = conexion.prepareStatement(query);
+                ResultSet result = statement.executeQuery();
+                while (result.next()) {
+                    int id = result.getInt("id");
+                    String ciudad = result.getString("ciudad");
+                    String pais = result.getString("pais");
+                    int gerente = result.getInt("gerente");
+                    int empleados = result.getInt("empleados");
+                    int inventario = result.getInt("inventario");
+                    sucursals.add(new Sucursal(id,ciudad,pais));
+                }
+                loginController.desconectar();
+                System.out.println("Sucursal cargada desde la base de datos.");
+            } catch (SQLException e) {
+                System.out.println("Error al cargar el inventario desde la base de datos: " + e.getMessage());
+            }
         }
 
 

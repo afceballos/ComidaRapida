@@ -1,6 +1,7 @@
 package org.comidarapida.view;
 
-import java.awt.EventQueue;
+import org.comidarapida.controller.loginController;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -66,12 +67,13 @@ public class LoginForm {
             public void actionPerformed(ActionEvent e) {
                 String username = usernameField.getText();
                 String password = passwordField.getText();
-
                 try {
                     Connection connection = loginController.conectar();
                     String query = "SELECT * FROM Usuarios";
+                    //Asignar un where con el nombre de usuarios, y quitar el while
                     PreparedStatement statement = connection.prepareStatement(query);
                     ResultSet result = statement.executeQuery();
+                    //disconect DB
                     while (result.next()) {
                         String user = result.getString("email");
                         String pass = result.getString("password");
@@ -80,13 +82,13 @@ public class LoginForm {
                             comidaRapida.Program();
                         } else {
                             JOptionPane.showMessageDialog(null, "Datos Incorrectos");
+                            loginController.desconectar();
                         }
                     }
-
                     loginController.desconectar();
                     System.out.println("Inventario cargado desde la base de datos.");
                 } catch (SQLException error) {
-                    System.out.println("Error al cargar los usuarios desde la base de datos: " + error.getMessage());
+                    System.out.println("Error al Iniciar sesion: " + error.getMessage());
                 }
 
             }

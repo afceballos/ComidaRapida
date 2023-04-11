@@ -1,6 +1,6 @@
 package org.comidarapida.models;
 
-import org.comidarapida.view.loginController;
+import org.comidarapida.controller.loginController;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,6 +24,12 @@ public class Sucursal {
         this.gerente = gerente;
         this.empleados = empleados;
         this.inventario = inventario;
+    }
+
+    public Sucursal(int id, String ciudad, String pais) {
+        this.id = id;
+        this.ciudad = ciudad;
+        this.pais = pais;
     }
 
     public int getId() {
